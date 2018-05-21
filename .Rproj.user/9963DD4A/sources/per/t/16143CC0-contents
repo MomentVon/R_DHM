@@ -1,0 +1,28 @@
+
+absolutabweichungfunk <- function(A,B){  ##A,B sind moglichkeit
+  return(sum(abs(A-B)))
+}
+p3moglichkeitfunk <- function(x){
+  return(integrate(p3moglichkeitdichtfunk,x,constMaxp3)$value)
+}
+
+
+eindim618funk <- function(paramekl,paramegr,DatenReferenz,abweichfk = absolutabweichungfunk,processfk,umkriesn){
+  paramelk=paramekl
+  paramerc=paramegr
+  abweischunglk=abweichfk(DatenReferenz,processfk(paramelk))
+  abweischungrc=abweichfk(DatenReferenz,processfk(paramerc))
+  for(i in 1:umkriesn){
+    parametemrc=paramelk+0.618*(paramerc - paramelk)
+    parametemlk=paramerc+0.618*(paramelk - paramerc)
+    abweischungtemrc=abweichfk(DatenReferenz,processfk(parametemrc))
+    abweischungtemlk=abweichfk(DatenReferenz,processfk(parametemlk))
+    if(abweischungtemrc<abweischungtemlk){
+      paramelk=parametemlk
+    }
+    if(abweischungtemlk<abweischungtemrc){
+      paramerc=parametemrc
+    }
+  }
+  return(mean(paramelk,paramerc))
+}

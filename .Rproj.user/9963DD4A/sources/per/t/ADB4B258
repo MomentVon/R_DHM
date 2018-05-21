@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526371445423.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "73|22|99|0|\n",
+    "hash" : "3250053375",
+    "id" : "ADB4B258",
+    "lastKnownWriteTime" : 1526375714,
+    "last_content_update" : 1526375714140,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/fctLKTOOLS.R",
+    "project_path" : "fctLKTOOLS.R",
+    "properties" : {
+        "cursorPosition" : "70,3",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

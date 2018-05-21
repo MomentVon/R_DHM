@@ -1,0 +1,194 @@
+#### creat and run a model ########
+setwd("C:/Users/DELL/Desktop/R-Copy")
+source("set.R")
+source("fctLKTOOLS.R")
+source("prepare.R")
+source("ET.R")
+source("INTERCEPTION.R")
+source("BASEFLOW.R")
+source("RUNOFF.R")
+source("GROUNDWATER.R")
+source("ROUTE.R")
+source("parameter.R")
+source("inputData.R")
+setwd("C:/Users/DELL/Desktop/R-Copy")
+
+######## ET ##########
+ModellRET = ModellEvapC = ModellTransp = ModellEvapS = ModellInterception = ModellBaseflow = ModellRunoff = ModellInfiltration = RoutSurFlow = RoutBasFlow = array(0.0, c(infoPeriodN, infoGridN))
+
+ModelMoistureVolume = array(0.0, c(infoPeriodN, infoGridN, infoZoneN + 2))
+ModelMoistureVolume[1,,c(1,2,3,4,5)] = 0.1 * as.matrix(ZoneDepth[,c(1,2,3,3,4)])
+
+############ groundwater paramters #######################
+SoilParam4GroundWaterTem = GridSoilParam[,c(2,3,4,7,8)]
+names(SoilParam4GroundWaterTem) = c("Porosity", "FieldCapacity", "WiltingPoint", "SaturatedHydraulicConductivity", "Porosity_Sub")
+SoilParam4GroundWater = cbind(ZoneDepth, SoilParam4GroundWaterTem)
+
+a = Sys.time()
+for (modell_i in 2:infoPeriodN) {
+  ### evaptranspiration ############
+  print(modell_i)
+  RET = ReferenceET_PenmanMonteith(NDay[modell_i], GridEvalution / 1000.0, GridLocation[,2], GridMetroData[modell_i,,3], GridMetroData[modell_i,,4], GridMetroData[modell_i,,2], GridMetroData[modell_i,,5], infoWindH, GridMetroData[modell_i,,6], GridMetroData[modell_i,,7])
+  ModellRET[modell_i,] = RET
+  AerodynamicResistance = fctAerodynamicResistance(GridLanduseParam[,29 + NMonth[modell_i]], GridLanduseParam[,17 + NMonth[modell_i]], GridMetroData[modell_i,,5])
+  
+  ET = ET_VIC(RET, GridMetroData[modell_i,,8], ModelMoistureVolume[(modell_i-1),,1], ZoneDepth$Depth0, ModelMoistureVolume[(modell_i-1),,2], ZoneDepth$Depth1 * GridSoilParam$T_Porosity_, AerodynamicResistance, GridLanduseParam$rarc, GridLanduseParam$rmin)
+  ModellEvapC[modell_i,] = ET$EvapC
+  ModellTransp[modell_i,] = ET$Transp
+  ModellEvapS[modell_i,] = ET$EvapS
+
+  ### interception ###############
+  # Interception = INTERCEPTION_Gash(ModelMoistureVolume[(modell_i-1),,1], ZoneDepth$Depth0, GridMetroData[modell_i,,8], ET$EvapC)
+  Interception = minVector(GridMetroData[modell_i,,8], ZoneDepth$Depth0 - ModelMoistureVolume[(modell_i-1),,1])
+  ModellInterception[modell_i,] = Interception
+  
+
+  
+  ### baseflow #########
+  Baseflow = BASEFLOW_ARNO (ModelMoistureVolume[(modell_i-1),,5], ZoneDepth$Depth4 * GridSoilParam$S_Porosity_)
+  ModellBaseflow[modell_i,] = Baseflow
+  ### runoff ############
+  
+  InfiltrationRateMax = fctInfiltrationGreenAmpt(GridSoilParam$T_SaturatedHydraulicConductivity_mm_day, GridSoilParam$T_WettingFrontSoilSuctionHead_mm, ModelMoistureVolume[(modell_i-1),,2] / ZoneDepth$Depth1, GridSoilParam$T_Porosity_, ModelMoistureVolume[(modell_i-1),,2])
+
+  Runoff = RUNOFF_VIC(GridMetroData[modell_i,,8] - Interception, (paramSoilMoistureCapacityB + 1) * (ZoneDepth$Depth1 + ZoneDepth$Depth23) * GridSoilParam$T_Porosity_, ModelMoistureVolume[(modell_i-1),,2] + ModelMoistureVolume[(modell_i-1),,3] + ModelMoistureVolume[(modell_i-1),,4], InfiltrationRateMax)
+  ##########################
+  # PrecipitationHoch = (GridMetroData[modell_i,,8] - Interception)
+  # SoilMoistureCapacityMax = (paramSoilMoistureCapacityB + 1) * (ZoneDepth$Depth1 + ZoneDepth$Depth23) * GridSoilParam$T_Porosity_
+  # SoilMoistureCapacity = (ModelMoistureVolume[(modell_i-1),,2] + ModelMoistureVolume[(modell_i-1),,3] + ModelMoistureVolume[(modell_i-1),,4] )
+  # InfiltrationRateMax = InfiltrationRateMax
+  # RUNOFF_VIC <- function(PrecipitationHoch, SoilMoistureCapacityMax, SoilMoistureVolume, InfiltrationRateMax){
+  #   SoilMoistureCapacity = fctMoistureCapacity(SoilMoistureVolume, SoilMoistureCapacityMax)
+  #   fctProcess <- function(rate, PrecipitationHoch. = PrecipitationHoch[i], SoilMoistureCapacityMax. = SoilMoistureCapacityMax[i], SoilMoistureCapacity. = SoilMoistureCapacity[i], InfiltrationRateMax. = InfiltrationRateMax[i]){
+  # 
+  #     SoilInfiltrationSER = fctSoilInfiltrationSER(rate * PrecipitationHoch., SoilMoistureCapacityMax., SoilMoistureCapacity.)
+  #     SaturatedArea = fctSaturatedArea(SoilMoistureCapacity. + rate * PrecipitationHoch., SoilMoistureCapacityMax.)
+  #     SoilInfiltrationOIER = fctSoilInfiltrationOIER((1 - rate) * PrecipitationHoch., InfiltrationRateMax.)
+  #     return(abs((SoilInfiltrationSER - (1.0 - SaturatedArea) * rate * PrecipitationHoch.) - SoilInfiltrationOIER))
+  #   }
+  #   nVector = length(PrecipitationHoch)
+  #   RunoffVIC = SoilInfiltrationVIC = SoilInfiltrationVICSER = SoilInfiltrationVICOIER = RatSER = array(0.0, dim = c(nVector,1))
+  #   for (i in 1:nVector) {
+  #     print(i)
+  #     RatSER[i] = eindim618funk(0, 1, 0, processfk = fctProcess, umkriesn = 5)
+  #     SoilInfiltrationVICSER[i] = fctSoilInfiltrationSER(RatSER[i] * PrecipitationHoch[i], SoilMoistureCapacityMax[i], SoilMoistureCapacity[i])
+  #     SoilInfiltrationVICOIER[i] = fctSoilInfiltrationOIER((1 - RatSER[i]) * PrecipitationHoch[i], InfiltrationRateMax[i])
+  #     SoilInfiltrationVIC[i] = SoilInfiltrationVICSER[i] + SoilInfiltrationVICOIER[i]
+  #     RunoffVIC[i] = PrecipitationHoch[i] - SoilInfiltrationVIC[i]
+  #   }
+  #   return(list(Runoff = RunoffVIC, Infiltration = SoilInfiltrationVIC, RatSER = RatSER))
+  # }
+  
+  
+  ###########################
+  
+  
+  
+  
+  ModellRunoff[modell_i,] = Runoff$Runoff
+  ModellInfiltration[modell_i,] = Runoff$Infiltration
+  
+  ### ground water replan / interflow ##########
+  GroundWaterIn = as.data.frame(as.matrix(ModelMoistureVolume[modell_i - 1,,]))
+  colnames(GroundWaterIn) = c("Volum0", "Volum1", "Volum2", "Volum3", "Volum4", "Volum5", "Depth2", "Depth3")
+  
+  Groundwater = GROUNDWATER_LK5Z(ET, Interception, Runoff$Infiltration, Baseflow, GroundWaterIn, SoilParam4GroundWater, SoilMatricPotential, GridSoilClass[,c(1,3,4)])
+  ModelMoistureVolume[modell_i,,] = as.matrix(Groundwater)
+  Groundwater = as.data.frame(as.matrix(Groundwater))
+  
+  ################################
+  # Evapotranspiration = ET
+  # Infiltration = Runoff$Infiltration
+  # BaseFlow = Baseflow
+  # GridSoilParame = SoilParam4GroundWater
+  # SoilMatricPotential = SoilMatricPotential
+  # GridSoilClass. = GridSoilClass[,c(1,3,4)]
+  # 
+  # GROUNDWATER_LK5Z <- function(Evapotranspiration, Interception, Infiltration, BaseFlow, GroundWaterIn, GridSoilParame, SoilMatricPotential, GridSoilClass.){
+  #   GroundWaterOut = GroundWaterIn
+  #   InterFlowFlux0 = as.matrix(Interception)
+  #   GroundWaterOut$Volum0 = maxSVector(0.0, GroundWaterIn$Volum0 + InterFlowFlux0 - as.matrix(Evapotranspiration$EvapC))
+  #   InterFlowFlux1 = Infiltration + GroundWaterIn$Volum0 + InterFlowFlux0 - (as.matrix(Evapotranspiration$Transp) + as.matrix(Evapotranspiration$EvapS))
+  #   GroundWaterOut$Volum1 = minVector(GroundWaterIn$Volum1 + InterFlowFlux1, GridSoilParame$Depth1 * GridSoilParame$Porosity * paramSoilPorosityToRootZone)
+  #   InterFlowFlux2 = maxSVector(0.0, GroundWaterIn$Volum1 + InterFlowFlux1 - GridSoilParame$Porosity * GridSoilParame$Depth1 * paramSoilPorosityToRootZone)
+  #   GroundWaterOut$Volum1 = maxVector(GridSoilParame$WiltingPoint * GridSoilParame$Depth1, GroundWaterOut$Volum1 - InterFlowFlux2)
+  # 
+  #   InterFlowFlux4 = minVector(GroundWaterIn$Volum3, GridSoilParame$Depth4 * GridSoilParame$Porosity_Sub - GroundWaterIn$Volum4)
+  #   GroundWaterOut$Volum4 = minVector(GridSoilParame$Depth4 * GridSoilParame$Porosity_Sub, GroundWaterIn$Volum4 + InterFlowFlux4 - BaseFlow)
+  #   InterFlowFlux5_4 = maxSVector(0.0, InterFlowFlux4 - (GridSoilParame$Depth4 * GridSoilParame$Porosity_Sub - GroundWaterIn$Volum4))
+  # 
+  #   Volum23 = minVector(GridSoilParame$Porosity * GridSoilParame$Depth23, GroundWaterIn$Volum3 + GroundWaterIn$Volum2 - InterFlowFlux4 + InterFlowFlux2)
+  #   InterFlowFlux5_23 = maxSVector(0.0, (GroundWaterIn$Volum3 + GroundWaterIn$Volum2 - InterFlowFlux4 + InterFlowFlux2) - (GridSoilParame$Porosity * GridSoilParame$Depth23))
+  #   Depth2TermVolum_1_2 = GridSoilParame$Porosity * GridSoilParame$Depth23 - Volum23
+  # 
+  #   Depth2Judge_2_3 = GridSoilParame$Depth23 * 0.5 * (GridSoilParame$FieldCapacity + GridSoilParame$Porosity)
+  #   Depth2_2 = 2 * Depth2TermVolum_1_2 / (GridSoilParame$Porosity - GridSoilParame$FieldCapacity)
+  #   GroundWaterOut$Depth2 = Depth2_2
+  #   GroundWaterOut$Depth2[which(InterFlowFlux5_23 > 0)] = 0.0
+  #   GroundWaterOut$Depth2[which(Volum23 < Depth2Judge_2_3)] = GridSoilParame$Depth23[which(Volum23 < Depth2Judge_2_3)]
+  #   GroundWaterOut$Depth3 = GridSoilParame$Depth23 - GroundWaterOut$Depth2
+  # 
+  #   GroundWaterOut$Volum2 = 0.5 * (GridSoilParame$Porosity + GridSoilParame$FieldCapacity) * GroundWaterOut$Depth2
+  #   GroundWaterOut$Volum2 = minVector(GroundWaterOut$Volum2, Volum23)
+  #   GroundWaterOut$Volum3 = Volum23 - GroundWaterOut$Volum2
+  # 
+  #   TensionHead = fctTensionHead(GroundWaterOut$Volum2, GroundWaterOut$Depth2, GridSoilParame$Porosity, SoilMatricPotential, GridSoilClass.)
+  #   BalanceChanged = fctWaterHeadBalance(GroundWaterOut$Volum3, maxSVector(0.0, GroundWaterOut$Depth3 - 0.8 * as.matrix(TensionHead)),  GroundWaterOut$Depth3, GridEvalution - GridSoilParame$Depth1 - GridSoilParame$Depth23 - GridSoilParame$Depth4, GridSoilParame$Porosity, GridSoilParame$SaturatedHydraulicConductivity)
+  # 
+  #   GroundWaterOut$Volum3 = BalanceChanged$Volum
+  #   RiverGet = GroundWaterOut$Volum3 * TranslateMatrixRiverInterflow
+  #   GroundWaterOut$Volum3 = GroundWaterOut$Volum3 - RiverGet
+  #   GroundWaterOut$Volum5 = as.matrix(RiverGet) + as.matrix(InterFlowFlux5_4) + as.matrix(InterFlowFlux5_23)
+  #   return(GroundWaterOut)
+  # }
+  # 
+  ##################################
+  ### route ###############
+  
+  RoutSurFlow[modell_i,] = Groundwater$Volum5 + Runoff$Runoff
+  RoutBasFlow[modell_i,] = Baseflow
+}
+b = Sys.time()
+b-a
+UHAll = fctUHALLMake(fctMakeUH_Shipeng, fctMakeUH_Shipeng, fctMakeUH_Shipeng, fctMakeUH_Shipeng)
+StationFlowQ = CONFLUENCE(RoutSurFlow, RoutBasFlow, UHAll)
+
+testn = 1826
+mean(GridMetroData[2:testn,,8])
+mean(ModellRET[2:testn,])
+mean(ModellEvapC[2:testn,] + ModellTransp[2:testn,] + ModellEvapS[2:testn,])
+mean(ModellEvapC[2:testn,])
+mean(ModellTransp[2:testn,])
+mean(ModellEvapS[2:testn,])
+mean(ModellInterception[2:testn,])
+mean(ModellRunoff[2:testn,]) 
+mean(ModellInfiltration[2:testn,]) 
+mean(ModelMoistureVolume[2:testn, , 5])
+mean(ModelMoistureVolume[2:testn, , 7])
+mean(ModelMoistureVolume[2:testn, , 8])
+mean(RoutSurFlow[2:testn,])
+mean(RoutBasFlow[2:testn])
+mean(StationFlowQ[2:testn])
+85*311*35
+ plot(200:730,StationFlowQ[200:730])
+RoutBasFlow[,1:20]
+
+###########################
+Evapotranspiration = ET
+Infiltration = Runoff$Infiltration
+BaseFlow = Baseflow
+GridSoilParame = SoilParam4GroundWater
+SoilMatricPotential = SoilMatricPotential
+GridSoilClass. = GridSoilClass[,c(1,3,4)]
+
+
+#########################
+
+
+
+
+
+
+
+
+

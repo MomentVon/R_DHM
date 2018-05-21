@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320999176.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "27|33|149|0|\n",
+    "hash" : "962579508",
+    "id" : "7406256B",
+    "lastKnownWriteTime" : 1526825224,
+    "last_content_update" : 1526825224412,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/MODELL.R",
+    "project_path" : "MODELL.R",
+    "properties" : {
+        "cursorPosition" : "154,0",
+        "docOutlineVisible" : "0",
+        "scrollLine" : "20"
+    },
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

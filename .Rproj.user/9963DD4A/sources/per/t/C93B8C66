@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320916280.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2102751222",
+    "id" : "C93B8C66",
+    "lastKnownWriteTime" : 1526737259,
+    "last_content_update" : 1526737259256,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/set.R",
+    "project_path" : "set.R",
+    "properties" : {
+        "cursorPosition" : "5,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320997488.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "0|23|1|62|\n2|70|21|0|\n22|16|32|0|\n33|29|40|92|\n43|24|62|0|\n63|21|96|83|\n",
+    "hash" : "3627794855",
+    "id" : "5EE28CE9",
+    "lastKnownWriteTime" : 1526815790,
+    "last_content_update" : 1526815790016,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/inputData.R",
+    "project_path" : "inputData.R",
+    "properties" : {
+        "cursorPosition" : "131,0",
+        "scrollLine" : "107"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

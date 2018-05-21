@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320929270.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3886925940",
+    "id" : "AD6546C8",
+    "lastKnownWriteTime" : 1526813520,
+    "last_content_update" : 1526813520069,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/parameter.R",
+    "project_path" : "parameter.R",
+    "properties" : {
+        "cursorPosition" : "3,26",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

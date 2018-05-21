@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320970829.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2419214718",
+    "id" : "EAD21A",
+    "lastKnownWriteTime" : 1526789347,
+    "last_content_update" : 1526805067146,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/BASEFLOW.R",
+    "project_path" : "BASEFLOW.R",
+    "properties" : {
+        "cursorPosition" : "11,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

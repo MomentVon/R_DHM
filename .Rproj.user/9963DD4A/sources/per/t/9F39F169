@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320981311.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "13|29|18|0|\n",
+    "hash" : "3598850672",
+    "id" : "9F39F169",
+    "lastKnownWriteTime" : 1526813004,
+    "last_content_update" : 1526813004885,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/RUNOFF.R",
+    "project_path" : "RUNOFF.R",
+    "properties" : {
+        "cursorPosition" : "81,0",
+        "scrollLine" : "65"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

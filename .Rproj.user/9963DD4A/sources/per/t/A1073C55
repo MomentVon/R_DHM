@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526320983051.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "10|30|50|0|\n52|110|97|0|\n121|104|134|0|\n136|155|172|0|\n",
+    "hash" : "2508234572",
+    "id" : "A1073C55",
+    "lastKnownWriteTime" : 1526819493,
+    "last_content_update" : 1526819551597,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/GROUNDWATER.R",
+    "project_path" : "GROUNDWATER.R",
+    "properties" : {
+        "cursorPosition" : "173,0",
+        "scrollLine" : "117"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

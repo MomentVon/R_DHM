@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526575419995.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "601237719",
+    "id" : "7494C3D4",
+    "lastKnownWriteTime" : 1526818696,
+    "last_content_update" : 1526818696192,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/run_VIC.R",
+    "project_path" : "run_VIC.R",
+    "properties" : {
+        "cursorPosition" : "68,33",
+        "scrollLine" : "56",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 13,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

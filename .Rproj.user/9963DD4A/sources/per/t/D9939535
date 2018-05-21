@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526321866494.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "1|28|4|0|\n6|31|9|0|\n11|26|14|0|\n17|96|73|0|\n76|93|94|0|\n97|60|105|0|\n108|76|134|0|\n136|83|151|0|\n174|77|195|0|\n198|60|213|0|\n215|38|222|0|\n",
+    "hash" : "1977818615",
+    "id" : "D9939535",
+    "lastKnownWriteTime" : 1526321940,
+    "last_content_update" : 1526376332638,
+    "path" : "C:/Users/DELL/Desktop/R-Copy/prepare.R",
+    "project_path" : "prepare.R",
+    "properties" : {
+        "cursorPosition" : "155,0",
+        "scrollLine" : "17"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
